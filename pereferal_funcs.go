@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -79,4 +80,26 @@ func (kuCoinApi *KuCoinApi) HeaderAdd(req *http.Request, method, endpoint string
 	req.Header.Add("KC-API-TIMESTAMP", strconv.Itoa(int(time.Now().Unix()*1000)))
 	req.Header.Add("KC-API-SIGN", signature)
 	req.Header.Add("KC-API-KEY-VERSION", "2")
+}
+
+func (kuCoinApi *KuCoinApi) ReceiveData(orderIdI interface{}, whatToFind string) (float64, error) {
+	orderIdByte, err := json.Marshal(orderIdI)
+	if err != nil {
+		return 0, err
+	}
+	var data map[string]interface{}
+
+	err = json.Unmarshal(orderIdByte, &data)
+	if err != nil {
+		return 0, err
+	}
+
+	whatToReturnI := data[whatToFind]
+	whatToReturn := fmt.Sprintf("%v", whatToReturnI)
+
+	whatToReturnF, err := strconv.ParseFloat(whatToReturn, 64)
+	if err != nil {
+		return 0, err
+	}
+	return whatToReturnF, nil
 }

@@ -2,22 +2,22 @@ package kucoinfuncs
 
 import "net/http"
 
-type MarketOrdersParams struct {
-	Uuid       string
-	Symbol     string
-	Side       string
-	OrderType  string
-	AssetCount float64
-	FiatCount  float64
-}
-type LimitOrdersParams struct {
-	Uuid      string
-	Symbol    string
-	Side      string
-	OrderType string
-	FiatCount float64
-	Price     float64
-}
+//type MarketOrdersParams struct {
+//	Uuid       string
+//	Symbol     string
+//	Side       string
+//	OrderType  string
+//	AssetCount float64
+//	FiatCount  float64
+//}
+//type LimitOrdersParams struct {
+//	Uuid      string
+//	Symbol    string
+//	Side      string
+//	OrderType string
+//	FiatCount float64
+//	Price     float64
+//}
 
 type KuCoinApi struct {
 	ApiKey    string
