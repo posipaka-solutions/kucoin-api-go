@@ -30,7 +30,6 @@ func (kuCoinApi *KuCoinApi) GetPrice(currency string, fiat string) (float64, err
 	}
 
 	return price, nil
-	//return string(body),nil
 }
 
 func (kuCoinApi *KuCoinApi) NewMarketOrder(orderParams MarketOrdersParams) (float64, error) {
@@ -122,11 +121,12 @@ func (kuCoinApi *KuCoinApi) GetAllOrders() (string, error) {
 	if tradeBotError != nil {
 		return "", tradeBotError
 	}
+
 	return string(body), nil
 
 }
 
-func (kuCoinApi KuCoinApi) NewLimitOrder(orderParams LimitOrdersParams) (bool, error) {
+func (kuCoinApi *KuCoinApi) NewLimitOrder(orderParams LimitOrdersParams) (bool, error) {
 	endpoint := "/api/v1/orders"
 	bodyJson := map[string]string{}
 	bodyJson["clientOid"] = orderParams.Uuid
@@ -156,10 +156,12 @@ func (kuCoinApi KuCoinApi) NewLimitOrder(orderParams LimitOrdersParams) (bool, e
 	if err != nil {
 		return false, nil
 	}
+
 	orderIdI, tradeBotError := kuCoinApi.OrderInfo(dataMap["orderId"])
 	if tradeBotError != nil {
 		return false, tradeBotError
 	}
+
 	orderIdByte, err := json.Marshal(orderIdI)
 	if err != nil {
 		return false, err
