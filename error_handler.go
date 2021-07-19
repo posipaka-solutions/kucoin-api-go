@@ -1,13 +1,11 @@
 package kucoinfuncs
 
 import (
-	"strconv"
-)
-import (
 	"encoding/json"
-	cmn "github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -21,8 +19,8 @@ func TradeBotErrorCheck(body []byte, res *http.Response, resErr, bodyErr error) 
 		return bodyErr
 
 	} else if res.StatusCode == 429 {
-		return &cmn.ExchangeError{
-			Type:    cmn.HttpErr,
+		return &exchangeapi.ExchangeError{
+			Type:    exchangeapi.HttpErr,
 			Code:    res.StatusCode,
 			Message: res.Status,
 		}
@@ -36,8 +34,8 @@ func TradeBotErrorCheck(body []byte, res *http.Response, resErr, bodyErr error) 
 			}
 			bodyCode, _ := strconv.Atoi(bodyAnswer.Code)
 			if bodyCode != 200000 {
-				return &cmn.ExchangeError{
-					Type:    cmn.KucoinErr,
+				return &exchangeapi.ExchangeError{
+					Type:    exchangeapi.KucoinErr,
 					Code:    bodyCode,
 					Message: bodyAnswer.Msg,
 				}
@@ -48,12 +46,12 @@ func TradeBotErrorCheck(body []byte, res *http.Response, resErr, bodyErr error) 
 
 	} else if res != nil {
 		if res.StatusCode != 200 {
-			return &cmn.ExchangeError{
-				Type:    cmn.HttpErr,
+			return &exchangeapi.ExchangeError{
+				Type:    exchangeapi.HttpErr,
 				Code:    res.StatusCode,
 				Message: res.Status,
 			}
 		}
 	}
-	return &cmn.ExchangeError{Type: cmn.KucoinErr, Message: "Body is nil"}
+	return &exchangeapi.ExchangeError{Type: exchangeapi.KucoinErr, Message: "Body is nil"}
 }

@@ -2,7 +2,3 @@
 	path = api/kucoin-api-docs
 	branch = master
 	url = git@github.com:Kucoin/kucoin-api-docs.git
-[submodule "vendor/posipaka-trade-cmn"]
-	path = vendor/posipaka-trade-cmn
-	branch = main
-	url = git@github.com:posipaka-trade/posipaka-trade-cmn.git

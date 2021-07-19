@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"strconv"
-	cmn "github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 )
 
 func (kuCoinApi *KuCoinApi) GetCurrentPrice(currency string, fiat string) (float64, error) {
@@ -32,28 +32,28 @@ func (kuCoinApi *KuCoinApi) GetCurrentPrice(currency string, fiat string) (float
 	return price, nil
 }
 
-func (kuCoinApi *KuCoinApi) SetOrder(orderParams cmn.OrderParameters) (float64, error) {
+func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (float64, error) {
 	endpoint := "/api/v1/orders"
 	bodyJson := map[string]string{}
-	if orderParams.Type == "MARKET" {
-		if orderParams.Side == {
+	if orderParams.Type == exchangeapi.Market {
+		if orderParams.Side == exchangeapi.Buy {
 			bodyJson["clientOid"] = uuid.New().String()
-			bodyJson["side"] = orderParams.Side
-			bodyJson["symbol"] = orderParams.Symbol
-			bodyJson["type"] = orderParams.Type
+			bodyJson["side"] = orderSideAlias[orderParams.Side]
+			bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
+			bodyJson["type"] = orderTypeAlias[orderParams.Type]
 			bodyJson["funds"] = fmt.Sprintf("%f", orderParams.Quantity)
 		} else {
 			bodyJson["clientOid"] = uuid.New().String()
-			bodyJson["side"] = orderParams.Side
-			bodyJson["symbol"] = orderParams.Symbol
-			bodyJson["type"] = orderParams.Type
+			bodyJson["side"] = orderSideAlias[orderParams.Side]
+			bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
+			bodyJson["type"] = orderTypeAlias[orderParams.Type]
 			bodyJson["size"] = fmt.Sprintf("%f", orderParams.Quantity)
 		}
 	}else {
 		bodyJson["clientOid"] = uuid.New().String()
-		bodyJson["side"] = orderParams.Side
-		bodyJson["symbol"] = orderParams.Symbol
-		bodyJson["type"] = orderParams.Type
+		bodyJson["side"] = orderSideAlias[orderParams.Side]
+		bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
+		bodyJson["type"] = orderTypeAlias[orderParams.Type]
 		bodyJson["size"] = fmt.Sprintf("%f", orderParams.Quantity)
 		bodyJson["price"] = fmt.Sprintf("%f", orderParams.Price)
 
@@ -82,7 +82,7 @@ func (kuCoinApi *KuCoinApi) SetOrder(orderParams cmn.OrderParameters) (float64, 
 		return 0, tradeBotError
 	}
 
-	if orderParams.Type == "LIMIT"{
+	if orderParams.Type == exchangeapi.Limit{
 		price,tradeBotError := kuCoinApi.ReceiveData(orderIdI,"price")
 		if tradeBotError != nil {
 			return 0, tradeBotError

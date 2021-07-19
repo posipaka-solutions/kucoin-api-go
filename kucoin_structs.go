@@ -1,6 +1,10 @@
 package kucoinfuncs
 
-import "net/http"
+import (
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"net/http"
+
+)
 
 //type MarketOrdersParams struct {
 //	Uuid       string
@@ -42,6 +46,16 @@ type TickerData struct {
 	BestBidSize string `json:"bestBidSize"`
 	BestAsk     string `json:"bestAsk"`
 	BestAskSize string `json:"bestAskSize"`
+}
+
+var orderSideAlias = map[exchangeapi.OrderSide]string{
+	exchangeapi.Buy: "BUY",
+	exchangeapi.Sell: "SELL",
+}
+
+var orderTypeAlias = map[exchangeapi.OrderType]string{
+	exchangeapi.Limit: "LIMIT",
+	exchangeapi.Market: "MARKET",
 }
 
 const (
