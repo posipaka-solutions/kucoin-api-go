@@ -1,8 +1,8 @@
-[submodule "vendor/kucoin-api-go"]
-	path = vendor/kucoin-api-go
-	url = git@github.com:posipaka-trade/kucoin-api-go.git
-	branch = main
-[submodule "api/kucoin-api-go"]
-	path = api/kucoin-api-go
-	url = git@github.com:Kucoin/kucoin-api-docs.git
+[submodule "api/kucoin-api-docs"]
+	path = api/kucoin-api-docs
 	branch = master
+	url = git@github.com:Kucoin/kucoin-api-docs.git
+[submodule "vendor/posipaka-trade-cmn"]
+	path = vendor/posipaka-trade-cmn
+	branch = main
+	url = git@github.com:posipaka-trade/posipaka-trade-cmn.git
