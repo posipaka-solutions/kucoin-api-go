@@ -36,7 +36,7 @@ func (kuCoinApi *KuCoinApi) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (fl
 }
 
 func (kuCoinApi *KuCoinApi) GetSymbolLimits(symbol exchangeapi.AssetsSymbol) (exchangeapi.SymbolLimits, error) {
-	resp, err := kuCoinApi.client.Get(fmt.Sprint(burl, "/api/v1/symbols?market=USDT"))
+	resp, err := kuCoinApi.client.Get(fmt.Sprint(burl, "/api/v1/symbols?market=ETH"))
 	if err != nil {
 		return exchangeapi.SymbolLimits{}, err
 	}
