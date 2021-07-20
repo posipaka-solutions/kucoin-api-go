@@ -2,17 +2,19 @@ package kucoinfuncs
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
 
-func (kuCoinApi *KuCoinApi) GetCurrentPrice(currency string, fiat string) (float64, error) {
+func (kuCoinApi *KuCoinApi) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
 	var price float64
 	endPoint := "/api/v1/market/orderbook/level1?"
-	params := fmt.Sprintf("symbol=%s-%s", currency, fiat)
+	params := fmt.Sprintf("symbol=%s-%s", symbol.Base, symbol.Quote)
 
 	body, tradeBotError := kuCoinApi.DoRequest(http.MethodGet, endPoint, params, nil)
 	if tradeBotError != nil {
@@ -31,6 +33,107 @@ func (kuCoinApi *KuCoinApi) GetCurrentPrice(currency string, fiat string) (float
 	}
 
 	return price, nil
+}
+
+func (kuCoinApi *KuCoinApi) GetSymbolLimits(symbol exchangeapi.AssetsSymbol) (exchangeapi.SymbolLimits, error) {
+	resp, err := kuCoinApi.client.Get(fmt.Sprint(burl, "/api/v1/symbols"))
+	if err != nil {
+		return exchangeapi.SymbolLimits{}, err
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode/100 != 2 {
+		return exchangeapi.SymbolLimits{}, &exchangeapi.ExchangeError{
+			Type:    exchangeapi.HttpErr,
+			Code:    resp.StatusCode,
+			Message: resp.Status,
+		}
+	}
+
+	var body []map[string]interface{}
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return exchangeapi.SymbolLimits{}, err
+	}
+	err = json.Unmarshal(respBytes, &body)
+	if err != nil {
+		return exchangeapi.SymbolLimits{}, err
+	}
+
+	for idx, _ := range body {
+		parsedSymbol, isOkay := body[idx]["symbol"].(string)
+		if !isOkay {
+			continue
+		}
+
+		if parsedSymbol != fmt.Sprint(symbol.Base, "-", symbol.Quote) {
+			continue
+		}
+
+		baseMinSize, isOkay := body[idx]["baseMinSize"].(string)
+		if !isOkay {
+			return exchangeapi.SymbolLimits{}, errors.New("baseMinSize parse failed")
+		}
+
+		baseMaxSize, isOkay := body[idx]["baseMaxSize"].(string)
+		if !isOkay {
+			return exchangeapi.SymbolLimits{}, errors.New("baseMaxSize parse failed")
+		}
+
+		baseIncrement, isOkay := body[idx]["baseIncrement"].(string)
+		if !isOkay {
+			return exchangeapi.SymbolLimits{}, errors.New("baseIncrement parse failed")
+		}
+
+		priceIncrement, isOkay := body[idx]["priceIncrement"].(string)
+		if !isOkay {
+			return exchangeapi.SymbolLimits{}, errors.New("priceIncrement parse failed")
+		}
+
+		limits := exchangeapi.SymbolLimits{
+			Symbol: symbol,
+		}
+
+		limits.BaseMinSize, _ = strconv.ParseFloat(baseMinSize, 64)
+		limits.BaseMaxSize, _ = strconv.ParseFloat(baseMaxSize, 64)
+		limits.BaseIncrement, _ = strconv.ParseFloat(baseIncrement, 64)
+		limits.PriceIncrement, _ = strconv.ParseFloat(priceIncrement, 64)
+		return limits, nil
+	}
+
+	return exchangeapi.SymbolLimits{}, errors.New("failed to get symbol limits")
+}
+
+func (kuCoinApi *KuCoinApi) GetServerTime() (uint64, error) {
+	resp, err := kuCoinApi.client.Get(fmt.Sprint(burl, "/api/v1/timestamp"))
+	if err != nil {
+		return 0, err
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode/100 != 2 {
+		return 0, &exchangeapi.ExchangeError{
+			Type:    exchangeapi.HttpErr,
+			Code:    resp.StatusCode,
+			Message: resp.Status,
+		}
+	}
+
+	var body map[string]interface{}
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0, err
+	}
+	err = json.Unmarshal(respBytes, &body)
+	if err != nil {
+		return 0, err
+	}
+
+	time, isOkay := body["data"].(uint64)
+	if !isOkay {
+		return 0, errors.New("failed to parse server time response")
+	}
+	return time, nil
 }
 
 func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (float64, error) {
