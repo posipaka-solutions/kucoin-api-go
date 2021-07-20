@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"net/http"
 	"strconv"
 )
 
@@ -13,7 +14,7 @@ func (kuCoinApi *KuCoinApi) GetCurrentPrice(currency string, fiat string) (float
 	endPoint := "/api/v1/market/orderbook/level1?"
 	params := fmt.Sprintf("symbol=%s-%s", currency, fiat)
 
-	body, tradeBotError := kuCoinApi.DoRequest(Get, endPoint, params, nil)
+	body, tradeBotError := kuCoinApi.DoRequest(http.MethodGet, endPoint, params, nil)
 	if tradeBotError != nil {
 		return 0, tradeBotError
 	}
@@ -49,7 +50,7 @@ func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (f
 			bodyJson["type"] = orderTypeAlias[orderParams.Type]
 			bodyJson["size"] = fmt.Sprintf("%f", orderParams.Quantity)
 		}
-	}else {
+	} else {
 		bodyJson["clientOid"] = uuid.New().String()
 		bodyJson["side"] = orderSideAlias[orderParams.Side]
 		bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
@@ -58,7 +59,7 @@ func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (f
 		bodyJson["price"] = fmt.Sprintf("%f", orderParams.Price)
 
 	}
-	body, tradeBotError := kuCoinApi.DoRequest(Post, endpoint, "", bodyJson)
+	body, tradeBotError := kuCoinApi.DoRequest(http.MethodPost, endpoint, "", bodyJson)
 	if tradeBotError != nil {
 		return 0, tradeBotError
 	}
@@ -82,25 +83,25 @@ func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (f
 		return 0, tradeBotError
 	}
 
-	if orderParams.Type == exchangeapi.Limit{
-		price,tradeBotError := kuCoinApi.ReceiveData(orderIdI,"price")
+	if orderParams.Type == exchangeapi.Limit {
+		price, tradeBotError := kuCoinApi.ReceiveData(orderIdI, "price")
 		if tradeBotError != nil {
 			return 0, tradeBotError
 		}
-		return price,nil
-	} else{
-		dealFunds, tradeBotError := kuCoinApi.ReceiveData(orderIdI,"dealFunds")
+		return price, nil
+	} else {
+		dealFunds, tradeBotError := kuCoinApi.ReceiveData(orderIdI, "dealFunds")
 		if tradeBotError != nil {
 			return 0, tradeBotError
 		}
-		return dealFunds,nil
+		return dealFunds, nil
 	}
 }
 
 func (kuCoinApi *KuCoinApi) OrderInfo(orderId string) (interface{}, error) {
 	endPoint := "/api/v1/orders/"
 
-	body, tradeBotError := kuCoinApi.DoRequest(Get, endPoint, orderId, nil)
+	body, tradeBotError := kuCoinApi.DoRequest(http.MethodGet, endPoint, orderId, nil)
 	if tradeBotError != nil {
 		return "", tradeBotError
 	}
@@ -121,7 +122,7 @@ func (kuCoinApi *KuCoinApi) GetAllOrders() (string, error) { //не смотри
 	endPoint := "/api/v1/orders?"
 	params := "status=done"
 
-	body, tradeBotError := kuCoinApi.DoRequest(Get, endPoint, params, nil)
+	body, tradeBotError := kuCoinApi.DoRequest(http.MethodGet, endPoint, params, nil)
 	if tradeBotError != nil {
 		return "", tradeBotError
 	}

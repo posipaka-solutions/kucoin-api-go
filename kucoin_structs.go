@@ -3,7 +3,6 @@ package kucoinfuncs
 import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"net/http"
-
 )
 
 //type MarketOrdersParams struct {
@@ -24,11 +23,17 @@ import (
 //}
 
 type KuCoinApi struct {
-	ApiKey    string
-	ApiSecret string
-	ApiPassPh string
-	Client    http.Client
+	apiKey exchangeapi.ApiKey
+	client *http.Client
 }
+
+func NewKuCoinApi(key exchangeapi.ApiKey) *KuCoinApi {
+	return &KuCoinApi{
+		apiKey: key,
+		client: &http.Client{},
+	}
+}
+
 type BodyAnswer struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
@@ -49,33 +54,13 @@ type TickerData struct {
 }
 
 var orderSideAlias = map[exchangeapi.OrderSide]string{
-	exchangeapi.Buy: "BUY",
+	exchangeapi.Buy:  "BUY",
 	exchangeapi.Sell: "SELL",
 }
 
 var orderTypeAlias = map[exchangeapi.OrderType]string{
-	exchangeapi.Limit: "LIMIT",
+	exchangeapi.Limit:  "LIMIT",
 	exchangeapi.Market: "MARKET",
 }
 
-const (
-	Buy  = "buy"
-	Sell = "sell"
-)
-const (
-	Gtc = "GTC"
-)
-
-// trading order type
-const (
-	Limit  = "limit"
-	Market = "market"
-)
-
-// Request methods
-const (
-	Get    = "GET"
-	Post   = "POST"
-	Delete = "DELETE"
-)
 const burl = "https://openapi-sandbox.kucoin.com" //"https://api.kucoin.com" //"https://openapi-sandbox.kucoin.com"

@@ -19,18 +19,18 @@ func (kuCoinApi *KuCoinApi) MakeSignature(baseUrl, method string, bodyJson []byt
 
 	if bodyJson != nil {
 		strToSign := timestamp + method + baseUrl + string(bodyJson)
-		h := hmac.New(sha256.New, []byte(kuCoinApi.ApiSecret))
+		h := hmac.New(sha256.New, []byte(kuCoinApi.apiKey.Secret))
 		h.Write([]byte(strToSign))
 		signature = base64.StdEncoding.EncodeToString(h.Sum(nil))
 	} else {
 		strToSign := timestamp + method + baseUrl
-		h := hmac.New(sha256.New, []byte(kuCoinApi.ApiSecret))
+		h := hmac.New(sha256.New, []byte(kuCoinApi.apiKey.Secret))
 		h.Write([]byte(strToSign))
 		signature = base64.StdEncoding.EncodeToString(h.Sum(nil))
 	}
 
-	p := hmac.New(sha256.New, []byte(kuCoinApi.ApiSecret))
-	p.Write([]byte(kuCoinApi.ApiPassPh))
+	p := hmac.New(sha256.New, []byte(kuCoinApi.apiKey.Secret))
+	p.Write([]byte(kuCoinApi.apiKey.Passphrase))
 	passPh := base64.StdEncoding.EncodeToString(p.Sum(nil))
 
 	return signature, passPh
@@ -59,7 +59,7 @@ func (kuCoinApi *KuCoinApi) DoRequest(method, endpoint, params string, bodyJson 
 		kuCoinApi.HeaderAdd(req, method, endpoint+params, nil)
 	}
 
-	res, resErr := kuCoinApi.Client.Do(req)
+	res, resErr := kuCoinApi.client.Do(req)
 
 	body, bodyErr := ioutil.ReadAll(res.Body)
 	tradeBotError := TradeBotErrorCheck(body, res, resErr, bodyErr)
@@ -75,7 +75,7 @@ func (kuCoinApi *KuCoinApi) HeaderAdd(req *http.Request, method, endpoint string
 	signature, passPh := kuCoinApi.MakeSignature(endpoint, method, bodyJsonStr)
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("KC-API-KEY", kuCoinApi.ApiKey)
+	req.Header.Add("KC-API-KEY", kuCoinApi.apiKey.Key)
 	req.Header.Add("KC-API-PASSPHRASE", passPh)
 	req.Header.Add("KC-API-TIMESTAMP", strconv.Itoa(int(time.Now().Unix()*1000)))
 	req.Header.Add("KC-API-SIGN", signature)
