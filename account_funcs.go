@@ -50,7 +50,7 @@ func (kuCoinApi *KuCoinApi) GetSymbolLimits(symbol exchangeapi.AssetsSymbol) (ex
 		}
 	}
 
-	var body []map[string]interface{}
+	var body map[string]interface{}
 	respBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return exchangeapi.SymbolLimits{}, err
@@ -60,46 +60,46 @@ func (kuCoinApi *KuCoinApi) GetSymbolLimits(symbol exchangeapi.AssetsSymbol) (ex
 		return exchangeapi.SymbolLimits{}, err
 	}
 
-	for idx, _ := range body {
-		parsedSymbol, isOkay := body[idx]["symbol"].(string)
-		if !isOkay {
-			continue
-		}
-
-		if parsedSymbol != fmt.Sprint(symbol.Base, "-", symbol.Quote) {
-			continue
-		}
-
-		baseMinSize, isOkay := body[idx]["baseMinSize"].(string)
-		if !isOkay {
-			return exchangeapi.SymbolLimits{}, errors.New("baseMinSize parse failed")
-		}
-
-		baseMaxSize, isOkay := body[idx]["baseMaxSize"].(string)
-		if !isOkay {
-			return exchangeapi.SymbolLimits{}, errors.New("baseMaxSize parse failed")
-		}
-
-		baseIncrement, isOkay := body[idx]["baseIncrement"].(string)
-		if !isOkay {
-			return exchangeapi.SymbolLimits{}, errors.New("baseIncrement parse failed")
-		}
-
-		priceIncrement, isOkay := body[idx]["priceIncrement"].(string)
-		if !isOkay {
-			return exchangeapi.SymbolLimits{}, errors.New("priceIncrement parse failed")
-		}
-
-		limits := exchangeapi.SymbolLimits{
-			Symbol: symbol,
-		}
-
-		limits.BaseMinSize, _ = strconv.ParseFloat(baseMinSize, 64)
-		limits.BaseMaxSize, _ = strconv.ParseFloat(baseMaxSize, 64)
-		limits.BaseIncrement, _ = strconv.ParseFloat(baseIncrement, 64)
-		limits.PriceIncrement, _ = strconv.ParseFloat(priceIncrement, 64)
-		return limits, nil
-	}
+	//for idx, _ := range body {
+	//	parsedSymbol, isOkay := body[idx]["symbol"].(string)
+	//	if !isOkay {
+	//		continue
+	//	}
+	//
+	//	if parsedSymbol != fmt.Sprint(symbol.Base, "-", symbol.Quote) {
+	//		continue
+	//	}
+	//
+	//	baseMinSize, isOkay := body[idx]["baseMinSize"].(string)
+	//	if !isOkay {
+	//		return exchangeapi.SymbolLimits{}, errors.New("baseMinSize parse failed")
+	//	}
+	//
+	//	baseMaxSize, isOkay := body[idx]["baseMaxSize"].(string)
+	//	if !isOkay {
+	//		return exchangeapi.SymbolLimits{}, errors.New("baseMaxSize parse failed")
+	//	}
+	//
+	//	baseIncrement, isOkay := body[idx]["baseIncrement"].(string)
+	//	if !isOkay {
+	//		return exchangeapi.SymbolLimits{}, errors.New("baseIncrement parse failed")
+	//	}
+	//
+	//	priceIncrement, isOkay := body[idx]["priceIncrement"].(string)
+	//	if !isOkay {
+	//		return exchangeapi.SymbolLimits{}, errors.New("priceIncrement parse failed")
+	//	}
+	//
+	//	limits := exchangeapi.SymbolLimits{
+	//		Symbol: symbol,
+	//	}
+	//
+	//	limits.BaseMinSize, _ = strconv.ParseFloat(baseMinSize, 64)
+	//	limits.BaseMaxSize, _ = strconv.ParseFloat(baseMaxSize, 64)
+	//	limits.BaseIncrement, _ = strconv.ParseFloat(baseIncrement, 64)
+	//	limits.PriceIncrement, _ = strconv.ParseFloat(priceIncrement, 64)
+	//	return limits, nil
+	//}
 
 	return exchangeapi.SymbolLimits{}, errors.New("failed to get symbol limits")
 }
