@@ -146,21 +146,21 @@ func (kuCoinApi *KuCoinApi) SetOrder(orderParams exchangeapi.OrderParameters) (f
 			bodyJson["side"] = orderSideAlias[orderParams.Side]
 			bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
 			bodyJson["type"] = orderTypeAlias[orderParams.Type]
-			bodyJson["funds"] = fmt.Sprintf("%f", orderParams.Quantity)
+			bodyJson["funds"] = fmt.Sprintf("%.4f", orderParams.Quantity)
 		} else {
 			bodyJson["clientOid"] = uuid.New().String()
 			bodyJson["side"] = orderSideAlias[orderParams.Side]
 			bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
 			bodyJson["type"] = orderTypeAlias[orderParams.Type]
-			bodyJson["size"] = fmt.Sprintf("%f", orderParams.Quantity)
+			bodyJson["size"] = fmt.Sprintf("%.4f", orderParams.Quantity)
 		}
 	} else {
 		bodyJson["clientOid"] = uuid.New().String()
 		bodyJson["side"] = orderSideAlias[orderParams.Side]
 		bodyJson["symbol"] = fmt.Sprint(orderParams.Symbol.Base, "-", orderParams.Symbol.Quote)
 		bodyJson["type"] = orderTypeAlias[orderParams.Type]
-		bodyJson["size"] = fmt.Sprintf("%f", orderParams.Quantity)
-		bodyJson["price"] = fmt.Sprintf("%f", orderParams.Price)
+		bodyJson["size"] = fmt.Sprintf("%.4f", orderParams.Quantity)
+		bodyJson["price"] = fmt.Sprintf("%.4f", orderParams.Price)
 
 	}
 	body, tradeBotError := kuCoinApi.DoRequest(http.MethodPost, endpoint, "", bodyJson)
