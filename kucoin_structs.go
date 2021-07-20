@@ -54,13 +54,13 @@ type TickerData struct {
 }
 
 var orderSideAlias = map[exchangeapi.OrderSide]string{
-	exchangeapi.Buy:  "BUY",
-	exchangeapi.Sell: "SELL",
+	exchangeapi.Buy:  "buy",
+	exchangeapi.Sell: "sell",
 }
 
 var orderTypeAlias = map[exchangeapi.OrderType]string{
-	exchangeapi.Limit:  "LIMIT",
-	exchangeapi.Market: "MARKET",
+	exchangeapi.Limit:  "limit",
+	exchangeapi.Market: "market",
 }
 
 const burl = "https://openapi-sandbox.kucoin.com" //"https://api.kucoin.com" //"https://openapi-sandbox.kucoin.com"
