@@ -63,4 +63,4 @@ var orderTypeAlias = map[exchangeapi.OrderType]string{
 	exchangeapi.Market: "market",
 }
 
-const burl = "https://openapi-sandbox.kucoin.com" //"https://api.kucoin.com" //"https://openapi-sandbox.kucoin.com"
+const burl = "https://api.kucoin.com" //"https://openapi-sandbox.kucoin.com"
