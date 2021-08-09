@@ -12,4 +12,6 @@ const (
 	TimeInForce   = "timeInForce"
 	Signature     = "signature"
 	Timestamp     = "timestamp"
+	Funds         = "funds"
+	Size          = "size"
 )

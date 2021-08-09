@@ -24,28 +24,32 @@ func OrderInfoParser(response *http.Response, parameters order.Parameters) (floa
 	if isOk != true {
 		return 0, errors.New("[kuckresponse] -> Error when casting dataI in OrderInfoParser")
 	}
+
 	if parameters.Type == order.Limit {
-		price, err := ReceiveData(orderI, "price")
+		price, err := receiveData(orderI, "price")
 		if err != nil {
 			return 0, err
 		}
+
 		return price, nil
 	} else {
-		dealFunds, err := ReceiveData(orderI, "dealFunds")
+		dealFunds, err := receiveData(orderI, "dealFunds")
 		if err != nil {
 			return 0, err
 		}
+
 		return dealFunds, nil
 	}
 }
-func ReceiveData(orderIdI map[string]interface{}, whatToFind string) (float64, error) {
+func receiveData(orderIdI map[string]interface{}, whatToFind string) (float64, error) {
 
 	whatToReturnI := orderIdI[whatToFind]
 	whatToReturn := fmt.Sprintf("%v", whatToReturnI)
 
 	whatToReturnF, err := strconv.ParseFloat(whatToReturn, 64)
 	if err != nil {
-		return 0, errors.New("[kuckresponse] -> Error when parsing whatToReturn to float64")
+		return 0, errors.New("[kuckresponse] -> Error when parsing whatToReturn to float64 in ReceiveData")
 	}
+
 	return whatToReturnF, nil
 }

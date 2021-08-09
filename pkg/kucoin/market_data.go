@@ -17,7 +17,9 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	if err != nil {
 		return 0, errors.New("[kucoin] -> Error in GetRequest when getting current price")
 	}
+
 	defer kuckresponse.CloseBody(response)
+
 	return kuckresponse.GetCurrentPriceParser(response)
 }
 func (manager *ExchangeManager) OrderInfo(orderId string, parameters order.Parameters) (float64, error) {
@@ -25,11 +27,18 @@ func (manager *ExchangeManager) OrderInfo(orderId string, parameters order.Param
 	if err != nil {
 		return 0, errors.New("[kucoin] -> Error when making new request for OrderInfo")
 	}
-	kucrequest.SetHeader(request, kucrequest.HeaderParams{BaseUrl: BaseUrl, Endpoint: orderInfoEndpoint + orderId, Method: http.MethodGet, BodyJson: nil, Key: manager.apiKey})
+
+	kucrequest.SetHeader(request, kucrequest.HeaderParams{BaseUrl: BaseUrl,
+		Endpoint: orderInfoEndpoint + orderId,
+		Method:   http.MethodGet, BodyJson: nil,
+		Key: manager.apiKey})
+
 	response, err := manager.client.Do(request)
 	if err != nil {
 		return 0, errors.New("[kucoin] -> Error when doing OrderInfo request ")
 	}
+
 	defer kuckresponse.CloseBody(response)
+
 	return kuckresponse.OrderInfoParser(response, parameters)
 }
