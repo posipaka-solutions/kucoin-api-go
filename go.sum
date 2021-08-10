@@ -1,0 +1,6 @@
+github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
+github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210719220954-5f401c0ce87f h1:hsAbQTvYjPIpCj7TsXD9mbrKzZ+RQ/vYr5aphfQhfoI=
+github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210719220954-5f401c0ce87f/go.mod h1:UMjcb/h6vL7Bi2+64e8ndsN2wsFVl1TwPkVJ2mXcYcM=
+github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210729124010-e93042208c77 h1:Ft6QxRndv8GljfjHP1VE6E9VOVIpI7jN8S1Xe8uCAak=
+github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210729124010-e93042208c77/go.mod h1:MtyBzOkj2aI7S3EX+8RGGYDDxtrtyFPETA6uOqwZFFM=
