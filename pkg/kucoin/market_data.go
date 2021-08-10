@@ -40,5 +40,5 @@ func (manager *ExchangeManager) OrderInfo(orderId string, parameters order.Param
 
 	defer kuckresponse.CloseBody(response)
 
-	return kuckresponse.OrderInfoParser(response, parameters)
+	return kuckresponse.OrderInfoParser(response)
 }

@@ -3,12 +3,12 @@ package kuckresponse
 import (
 	"errors"
 	"fmt"
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
+	"github.com/posipaka-trade/kucoin-api-go/internal/pnames"
 	"net/http"
 	"strconv"
 )
 
-func OrderInfoParser(response *http.Response, parameters order.Parameters) (float64, error) {
+func OrderInfoParser(response *http.Response) (float64, error) {
 	body, err := getResponseBody(response)
 	if err != nil {
 		return 0, err
@@ -19,27 +19,18 @@ func OrderInfoParser(response *http.Response, parameters order.Parameters) (floa
 		return 0, errors.New("[kuckresponse] -> Error when casting body in OrderInfoParser")
 	}
 
-	dataI := bodyI["data"]
-	orderI, isOk := dataI.(map[string]interface{})
+	orderI, isOk := bodyI[pnames.Data].(map[string]interface{})
 	if isOk != true {
 		return 0, errors.New("[kuckresponse] -> Error when casting dataI in OrderInfoParser")
 	}
 
-	if parameters.Type == order.Limit {
-		price, err := receiveData(orderI, "price")
-		if err != nil {
-			return 0, err
-		}
-
-		return price, nil
-	} else {
-		dealFunds, err := receiveData(orderI, "dealFunds")
-		if err != nil {
-			return 0, err
-		}
-
-		return dealFunds, nil
+	dealFunds, err := receiveData(orderI, pnames.Size)
+	if err != nil {
+		return 0, err
 	}
+
+	return dealFunds, nil
+
 }
 func receiveData(orderIdI map[string]interface{}, whatToFind string) (float64, error) {
 

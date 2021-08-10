@@ -24,7 +24,11 @@ func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (float64, 
 		return 0, errors.New("[kucoin] -> Error when making new request in SetOrder")
 	}
 
-	kucrequest.SetHeader(request, kucrequest.HeaderParams{BaseUrl: BaseUrl, Endpoint: newOrderEndpoint, Method: http.MethodPost, BodyJson: requestBody, Key: manager.apiKey})
+	kucrequest.SetHeader(request, kucrequest.HeaderParams{BaseUrl: BaseUrl,
+		Endpoint: newOrderEndpoint,
+		Method:   http.MethodPost,
+		BodyJson: requestBody,
+		Key:      manager.apiKey})
 
 	response, err := manager.client.Do(request)
 	if err != nil {
@@ -46,20 +50,20 @@ func (manager *ExchangeManager) createOrderRequestBody(params *order.Parameters)
 
 	if params.Type == order.Market {
 		if params.Side == order.Buy {
-			bodyJson[pnames.OrderId] = uuid.New().String()
+			bodyJson[pnames.ClientId] = uuid.New().String()
 			bodyJson[pnames.Side] = orderSideAlias[params.Side]
 			bodyJson[pnames.Symbol] = fmt.Sprint(params.Assets.Base, "-", params.Assets.Quote)
 			bodyJson[pnames.Type] = orderTypeAlias[params.Type]
 			bodyJson[pnames.Funds] = fmt.Sprintf("%f", params.Quantity)
 		} else {
-			bodyJson[pnames.OrderId] = uuid.New().String()
+			bodyJson[pnames.ClientId] = uuid.New().String()
 			bodyJson[pnames.Side] = orderSideAlias[params.Side]
 			bodyJson[pnames.Symbol] = fmt.Sprint(params.Assets.Base, "-", params.Assets.Quote)
 			bodyJson[pnames.Type] = orderTypeAlias[params.Type]
 			bodyJson[pnames.Size] = fmt.Sprintf("%f", params.Quantity)
 		}
 	} else {
-		bodyJson[pnames.OrderId] = uuid.New().String()
+		bodyJson[pnames.ClientId] = uuid.New().String()
 		bodyJson[pnames.Side] = orderSideAlias[params.Side]
 		bodyJson[pnames.Symbol] = fmt.Sprint(params.Assets.Base, "-", params.Assets.Quote)
 		bodyJson[pnames.Type] = orderTypeAlias[params.Type]

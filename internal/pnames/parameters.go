@@ -1,7 +1,8 @@
 package pnames
 
 const (
-	OrderId       = "clientOid"
+	ClientId      = "clientOid"
+	OrderId       = "orderId"
 	Status        = "status"
 	Symbol        = "symbol"
 	Side          = "side"
@@ -14,4 +15,6 @@ const (
 	Timestamp     = "timestamp"
 	Funds         = "funds"
 	Size          = "size"
+	Data          = "data"
+	DealFunds     = "dealFunds"
 )

@@ -32,27 +32,11 @@ var orderTypeAlias = map[order.Type]string{
 }
 
 const (
-	newOrderEndpoint       = "/api/v1/orders"
-	openOrdersEndpoint     = "/api/v3/openOrders"
-	getPriceEndpoint       = "/api/v1/market/orderbook/level1"
-	getCandlestickEndpoint = "/api/v3/klines"
-	orderInfoEndpoint      = "/api/v1/orders/"
+	newOrderEndpoint = "/api/v1/orders"
+	//openOrdersEndpoint     = "/api/v3/openOrders"
+	getPriceEndpoint = "/api/v1/market/orderbook/level1"
+	//getCandlestickEndpoint = "/api/v3/klines"
+	orderInfoEndpoint = "/api/v1/orders/"
 )
 
-const goodTilCanceled = "GTC"
-
-type TickerData struct {
-	Time        int64  `json:"time"`
-	Sequence    string `json:"sequence"`
-	Price       string `json:"price"`
-	Size        string `json:"size"`
-	BestBid     string `json:"bestBid"`
-	BestBidSize string `json:"bestBidSize"`
-	BestAsk     string `json:"bestAsk"`
-	BestAskSize string `json:"bestAskSize"`
-}
-
-type PriceMap struct {
-	Code string     `json:"code"`
-	Data TickerData `json:"data"`
-}
+//const goodTilCanceled = "GTC"

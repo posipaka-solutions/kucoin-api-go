@@ -3,9 +3,11 @@ package kuckresponse
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -33,18 +35,24 @@ func getResponseBody(response *http.Response) (interface{}, error) {
 		return nil, err
 	}
 
-	if response.StatusCode/100 != 2 {
-		return nil, parseKucoinError(body)
+	kucoinErrorCodeI, isOk := body[codeKey].(string)
+	if !isOk {
+		return nil, errors.New("[kuckresponse] -> error code key not found")
+	}
+
+	kucoinErrorCode, err := strconv.Atoi(fmt.Sprintf("%v", kucoinErrorCodeI))
+	if err != nil {
+		return nil, errors.New("[kuckresponse] -> error when parsing kucoinErrorCodeI to float64")
+	}
+
+	if kucoinErrorCode > 200000 && kucoinErrorCode < 900002 {
+		return nil, parseKucoinError(body, kucoinErrorCode)
 	}
 
 	return body, nil
 }
 
-func parseKucoinError(body map[string]interface{}) error {
-	code, isOkay := body[codeKey].(float64)
-	if !isOkay {
-		return errors.New("[kuckresponse] -> error code key not found")
-	}
+func parseKucoinError(body map[string]interface{}, kucoinErrorCode int) error {
 
 	message, isOkay := body[msgKey].(string)
 	if !isOkay {
@@ -52,8 +60,8 @@ func parseKucoinError(body map[string]interface{}) error {
 	}
 
 	return &exchangeapi.ExchangeError{
-		Type:    exchangeapi.BinanceErr,
-		Code:    int(code),
+		Type:    exchangeapi.KucoinErr,
+		Code:    kucoinErrorCode,
 		Message: message,
 	}
 }
